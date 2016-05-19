@@ -22,16 +22,16 @@ int playerMoveX = 0;
 int playerMoveY = 0;
 
 #define BALL_SIZE  35
-int ballX = SCREEN_WIDTH/2 - BALL_SIZE/2;
-int ballY = SCREEN_HEIGHT - PLAYER_HEIGHT - BALL_SIZE;
-int ballMoveX = 1;
-int ballMoveY = -1;
+float ballX = SCREEN_WIDTH/2 - BALL_SIZE/2;
+float ballY = SCREEN_HEIGHT - PLAYER_HEIGHT - BALL_SIZE;
+float ballMoveX = 0.5;
+float ballMoveY = -0.5;
 
 #define BLOCK_SIZE_X 50
 #define BLOCK_SIZE_Y 25
 int matrizRow = 4;
 int matrizColumn = 10;
-int matriz[4][5]; 
+int matriz[4][10]; 
 int offSetX = 10;
 int offSetY = 10;
 int startX = 25;
@@ -77,8 +77,8 @@ void CleanUp(){
 void Lose(){
 	ballX = SCREEN_WIDTH/2 - BALL_SIZE/2;
 	ballY = SCREEN_HEIGHT - PLAYER_HEIGHT - BALL_SIZE;
-	ballMoveX = 1;
-	ballMoveY = -1;
+	ballMoveX = 0.5;
+	ballMoveY = -.5;
 
 	playerX = SCREEN_WIDTH/2 - PLAYER_WIDTH/2;
 	playerY = SCREEN_HEIGHT - PLAYER_HEIGHT;
@@ -108,6 +108,15 @@ void Collision_Ball_Screen(){
 		//ballMoveY = -ballMoveY; //Lose
 }
 
+void Collision_Player_Screen(){
+	if(playerX < 0)
+		playerX = 0;
+	if(playerX + PLAYER_WIDTH > SCREEN_WIDTH)
+		playerX = SCREEN_WIDTH - PLAYER_WIDTH;
+		//ballMoveY = -ballMoveY; //Lose
+}
+
+
 void Collision_Ball_Player()
 {
 	if(ballX < playerX + PLAYER_WIDTH && ballX + BALL_SIZE > playerX &&
@@ -136,6 +145,9 @@ void Collision_Ball_Matrix(){
 					matriz[i][j] = 1;
 					ballMoveX *= -1;
 					ballMoveY *= -1;
+					i =50;
+					j = 50;
+					break;
 				}
 			}
 			j++;
@@ -222,12 +234,13 @@ int main(void){
 		UpdateBall();
 
 		SDL_Flip( screen );
+		Collision_Player_Screen();
 		Collision_Ball_Screen();
 		Collision_Ball_Player();
 		Collision_Ball_Matrix();
 	}
 
-	CleanUp();
+	CleanUp(); 
 		
 	return 0;
 }
